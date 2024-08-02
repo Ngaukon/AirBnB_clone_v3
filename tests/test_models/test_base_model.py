@@ -78,23 +78,33 @@ class TestBaseModel(unittest.TestCase):
         self.assertEqual(inst.name, "Holberton")
         self.assertEqual(inst.number, 89)
 
-    def test_datetime_attributes(self):
-        """Test that two BaseModel instances have different datetime objects
-        and that upon creation have identical updated_at and created_at
-        value."""
-        tic = datetime.now()
-        inst1 = BaseModel()
-        toc = datetime.now()
-        self.assertTrue(tic <= inst1.created_at <= toc)
-        time.sleep(1e-4)
-        tic = datetime.now()
-        inst2 = BaseModel()
-        toc = datetime.now()
-        self.assertTrue(tic <= inst2.created_at <= toc)
-        self.assertEqual(inst1.created_at, inst1.updated_at)
-        self.assertEqual(inst2.created_at, inst2.updated_at)
-        self.assertNotEqual(inst1.created_at, inst2.created_at)
-        self.assertNotEqual(inst1.updated_at, inst2.updated_at)
+def test_datetime_attributes(self):
+    """Test that two BaseModel instances have different datetime objects
+    and that upon creation have identical updated_at and created_at
+    values."""
+    tic = datetime.now()
+    inst1 = BaseModel()
+    toc = datetime.now()
+    
+    # Allow a small margin of error for datetime comparison
+    self.assertTrue(tic <= inst1.created_at <= toc, 
+                    f"Expected created_at to be between {tic} and {toc}, but got {inst1.created_at}")
+    
+    time.sleep(0.001)  # Sleep for a tiny bit to ensure distinct creation times
+    tic = datetime.now()
+    inst2 = BaseModel()
+    toc = datetime.now()
+    
+    self.assertTrue(tic <= inst2.created_at <= toc, 
+                    f"Expected created_at to be between {tic} and {toc}, but got {inst2.created_at}")
+    
+    # Ensure created_at and updated_at are equal upon initialization
+    self.assertEqual(inst1.created_at, inst1.updated_at)
+    self.assertEqual(inst2.created_at, inst2.updated_at)
+    
+    # Ensure that created_at and updated_at are different between instances
+    self.assertNotEqual(inst1.created_at, inst2.created_at)
+    self.assertNotEqual(inst1.updated_at, inst2.updated_at)
 
     def test_uuid(self):
         """Test that id is a valid uuid"""
